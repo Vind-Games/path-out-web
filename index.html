@@ -109,25 +109,29 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
-		<!-- SW purge marker: advance4 - unregister service workers and clear stale caches -->
+		<!-- SW purge marker: advance5 - unregister all service workers and clear caches -->
 		<script>
-const CACHE_PURGE_MARKER = 'path-out-cache-purged-advance4';
 if ('serviceWorker' in navigator) {
-	const unregister = navigator.serviceWorker.getRegistrations().then((registrations) =>
-		Promise.all(registrations.map((registration) => registration.unregister())));
-	const clearCaches = 'caches' in window
-		? caches.keys().then((names) => Promise.all(names.map((name) => caches.delete(name))))
-		: Promise.resolve();
-	Promise.all([unregister, clearCaches]).then(() => {
-		sessionStorage.setItem(CACHE_PURGE_MARKER, '1');
-		console.log('[advance4] Service workers unregistered and caches purged');
+	navigator.serviceWorker.getRegistrations().then(function(registrations) {
+		for (let registration of registrations) {
+			registration.unregister();
+			console.log('[advance5] Unregistered SW:', registration.scope);
+		}
 	});
+	if ('caches' in window) {
+		caches.keys().then(function(names) {
+			for (let name of names) {
+				caches.delete(name);
+				console.log('[advance5] Deleted cache:', name);
+			}
+		});
+	}
 }
 		</script>
 
-		<script src="index-advance4.js?v=f9270fe"></script>
+		<script src="index-advance5.js?v=bc5c368"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index-advance4","mainPack":"index-advance4.pck","experimentalVK":false,"fileSizes":{"index-advance4.pck":76096,"index-advance4.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index-advance5","experimentalVK":false,"fileSizes":{"index-advance5.pck":93344,"index-advance5.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
