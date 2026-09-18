@@ -1,8 +1,9 @@
-# Path Out — advance5 Web Deploy
+# Path Out — advance6 Web Deploy
 
 Live: https://vind-games.github.io/path-out-web/
 
-- Source: Vind-Games/path-out @ 5e2e8d138a0c4568498c37cac7f8234126de4f8b
+- Source: Vind-Games/path-out @ 3ee7a0a46794ea6daf9c0a7c1285aef7d1b39aef
 - Export: Godot 4.7.2 HTML5, threads OFF
-- Pack: index-advance5.pck
-- SW purge marker: advance5
+- Pack: index-advance6.pck
+- SW purge marker: advance6
+- Cache-bust: ?v=3ee7a0a

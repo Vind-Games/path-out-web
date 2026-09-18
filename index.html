@@ -90,9 +90,9 @@ body {
 	z-index: 1;
 }
 		</style>
-		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
-<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes">
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index-advance6.icon.png" />
+<link rel="apple-touch-icon" href="index-advance6.apple-touch-icon.png"/>
+
 	</head>
 	<body>
 		<canvas id="canvas">
@@ -104,34 +104,33 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index-advance6.png" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
 
-		<!-- SW purge marker: advance5 - unregister all service workers and clear caches -->
+		<!-- SW purge marker: advance6 - unregister all service workers and clear caches -->
 		<script>
 if ('serviceWorker' in navigator) {
 	navigator.serviceWorker.getRegistrations().then(function(registrations) {
 		for (let registration of registrations) {
 			registration.unregister();
-			console.log('[advance5] Unregistered SW:', registration.scope);
+			console.log('[advance6] Unregistered SW:', registration.scope);
 		}
 	});
 	if ('caches' in window) {
 		caches.keys().then(function(names) {
 			for (let name of names) {
 				caches.delete(name);
-				console.log('[advance5] Deleted cache:', name);
+				console.log('[advance6] Deleted cache:', name);
 			}
 		});
 	}
 }
 		</script>
-
-		<script src="index-advance5.js?v=bc5c368"></script>
+		<script src="index-advance6.js?v=3ee7a0a"></script>
 		<script>
-const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":false,"executable":"index-advance5","experimentalVK":false,"fileSizes":{"index-advance5.pck":93344,"index-advance5.wasm":43699190},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index-advance6","experimentalVK":false,"fileSizes":{"index-advance6.pck":92532,"index-advance6.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
 const GODOT_THREADS_ENABLED = false;
 const engine = new Engine(GODOT_CONFIG);
 
@@ -187,8 +186,36 @@ const engine = new Engine(GODOT_CONFIG);
 	});
 
 	if (missing.length !== 0) {
-		const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
-		displayFailureNotice(missingMsg + missing.join('\n'));
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
 	} else {
 		setStatusMode('progress');
 		engine.startGame({
@@ -209,3 +236,4 @@ const engine = new Engine(GODOT_CONFIG);
 		</script>
 	</body>
 </html>
+
