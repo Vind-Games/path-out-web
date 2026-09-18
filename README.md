@@ -4,9 +4,9 @@
 
 Greybox: ColorRect boats + Line2D grid (no Kenney/board PNG). Godot 4.7.2, threads OFF.
 
-20-level Harbor Launch pack (`TOTAL_LEVELS := 20`). Tap fix: ColorRect `MOUSE_FILTER_IGNORE` + GameController `_unhandled_input` / ScreenTouch fallback.
+20-level Harbor Launch pack (`TOTAL_LEVELS := 20`) with redesigned L3 soft-jam teach + mid/spike tune (L9–10 / L16–17). Tap fix: ColorRect `MOUSE_FILTER_IGNORE` + GameController `_unhandled_input` / ScreenTouch fallback.
 
 Source branch: `cursor/milestone-1-harbor-launch-fe2d` @ Vind-Games/path-out
 
 Backup zip: https://github.com/Vind-Games/path-out/releases/tag/debug-sticky-web (`PathOut-m1-web.zip`)  
-Local build: `/workspace/path-out-assets/web-levels/`
+Local build: `/workspace/path-out-assets/web-levels2/`
